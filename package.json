@@ -1,0 +1,1 @@
+{"description":"Midnight Fridge Roast — one line roasting a smart fridge that refuses to open after midnight","license":"MIT","name":"u-carbon-forge-midnight-fridge-roast-fc5d44a7","scripts":{"start":"node main.ts"},"type":"module","version":"1.0.0"}
