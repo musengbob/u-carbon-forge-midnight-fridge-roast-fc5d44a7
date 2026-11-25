@@ -9,16 +9,27 @@ import { join } from "node:path";
 const ENTRY =
   "At 3am my smart fridge clicks its light on like a courtroom lamp, locks the door, and lets the hum testify: same man, same snack, same lie.";
 
+const MIN_CHARS = 1;
 const MAX_CHARS = 200;
 
-function validateEntry(text: string): void {
+function validateSingleLine(text: string): void {
   const lines = text.split("\n");
   if (lines.length !== 1 || text.trim().length === 0) {
     throw new Error("entry must be exactly one non-blank line");
   }
-  if (text.length < 1 || text.length > MAX_CHARS) {
-    throw new Error(`entry must be 1-${MAX_CHARS} characters, got ${text.length}`);
+}
+
+function validateLength(text: string): void {
+  if (text.length < MIN_CHARS || text.length > MAX_CHARS) {
+    throw new Error(
+      `entry must be ${MIN_CHARS}-${MAX_CHARS} characters, got ${text.length}`,
+    );
   }
+}
+
+function validateEntry(text: string): void {
+  validateSingleLine(text);
+  validateLength(text);
 }
 
 function resolveOutputPath(): string {
@@ -28,12 +39,17 @@ function resolveOutputPath(): string {
   return join(process.cwd(), "output");
 }
 
-function main(): void {
+function buildEntryLine(): string {
   validateEntry(ENTRY);
+  return ENTRY;
+}
+
+function main(): void {
+  const entry = buildEntryLine();
   const outDir = resolveOutputPath();
   mkdirSync(outDir, { recursive: true });
-  writeFileSync(join(outDir, "entry.txt"), ENTRY + "\n", "utf8");
-  console.log(`wrote entry.txt (${ENTRY.length} chars) to ${outDir}`);
+  writeFileSync(join(outDir, "entry.txt"), entry + "\n", "utf8");
+  console.log(`wrote entry.txt (${entry.length} chars) to ${outDir}`);
 }
 
 main();
