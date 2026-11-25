@@ -11,6 +11,16 @@ const ENTRY =
 
 const MAX_CHARS = 200;
 
+function validateEntry(text: string): void {
+  const lines = text.split("\n");
+  if (lines.length !== 1 || text.trim().length === 0) {
+    throw new Error("entry must be exactly one non-blank line");
+  }
+  if (text.length < 1 || text.length > MAX_CHARS) {
+    throw new Error(`entry must be 1-${MAX_CHARS} characters, got ${text.length}`);
+  }
+}
+
 function resolveOutputPath(): string {
   if (process.env.MAKEFUN_OUTPUT_DIR) return process.env.MAKEFUN_OUTPUT_DIR;
   if (process.env.OUTPUT_PATH) return process.env.OUTPUT_PATH;
@@ -19,13 +29,7 @@ function resolveOutputPath(): string {
 }
 
 function main(): void {
-  const lines = ENTRY.split("\n");
-  if (lines.length !== 1 || ENTRY.trim().length === 0) {
-    throw new Error("entry must be exactly one non-blank line");
-  }
-  if (ENTRY.length < 1 || ENTRY.length > MAX_CHARS) {
-    throw new Error(`entry must be 1-${MAX_CHARS} characters, got ${ENTRY.length}`);
-  }
+  validateEntry(ENTRY);
   const outDir = resolveOutputPath();
   mkdirSync(outDir, { recursive: true });
   writeFileSync(join(outDir, "entry.txt"), ENTRY + "\n", "utf8");
